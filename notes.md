@@ -80,7 +80,52 @@ public class Helloworldbean {
 ```
 
 ## @PathVariable
+- this variable is enclosed with cuirly braces {}
+```
+Usage: 
+//Create path variable
+//  localhost/hello-world/path-variable/{name}
+// @PathVariable
+@GetMapping(path = "/hello-world/{name}") //Mapping GET request to hello-world
+public Helloworldbean helloworldPV(@PathVariable String name){
+    //Pass input into bean's constructor
+    return new Helloworldbean(String.format("Hello World, %s", name) );
+} //the String name is a PathVariable will be pass into /hello-world/{name}
+```
 
 ## @Service
+- Service Components are the class file which contains @Service annotation
+- @Service annotates classes at the service layer
+- We mark beans with @Service to indicate that it's holding the business logic
+```
+@Service
+public class TodoHardCodedService {
+
+    private static List<Todo> todos = new ArrayList();
+
+    private static int idCount = 0;
+
+    static {
+        todos.add(new Todo(idCount++, "kokxz", "I want to drink coffee", new Date(), false));
+        todos.add(new Todo(idCount++, "Naoki", "I want to drink Soda", new Date(), false));
+        todos.add(new Todo(idCount++, "Neo", "I want to drink milk", new Date(), false));
+    }
+
+    public List<Todo> findAll(){
+        return todos;
+    }
+}
+```
 
 ## @Autowired
+- This annotation allows Spring to resolve and inject collaborating beans into your bean.
+- Once annotation injection is enabled, autowiring can be used on properties, setters, and constructors.
+- Spring Team recommends: "Always use constructor based dependency injection in your beans. Always use assertions for mandatory dependencies"
+```
+@Autowired
+private TodoHardCodedService todoService; //Without autowired, the todoService can't be injected with TodoHardCodedService
+```
+
+
+## @Repository
+- annotates classes at the persistence layer, which will act as a database repository
