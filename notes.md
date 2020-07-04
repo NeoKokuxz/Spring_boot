@@ -81,7 +81,7 @@ public class Helloworldbean {
 
 ## @PathVariable
 - this variable is enclosed with cuirly braces {}
-```
+```java
 Usage: 
 //Create path variable
 //  localhost/hello-world/path-variable/{name}
