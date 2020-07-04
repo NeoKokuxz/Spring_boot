@@ -18,12 +18,12 @@
 ## @GetMapping
 - Annotation for mapping HTTP GET requests onto specific handler methods.
 - inside () is the route that direct to the page contain bean info. 
-```
+```java
 @GetMapping(path = "/hello-world") //Mapping GET request to hello-world
 @GetMapping("/users/{username}/todos")
 http://localhost:8080/users/naoki/todos //This return the json file below
 ```
-```
+```json
 [
   {
     "id": 0,
@@ -56,7 +56,7 @@ http://localhost:8080/users/naoki/todos //This return the json file below
 - name of the data will be after getter / setter. 
   - Example: getMessage will result { "message" : "stored data" }
 
-```
+```java
 public class Helloworldbean {
 
     private String message;
@@ -97,7 +97,7 @@ public Helloworldbean helloworldPV(@PathVariable String name){
 - Service Components are the class file which contains @Service annotation
 - @Service annotates classes at the service layer
 - We mark beans with @Service to indicate that it's holding the business logic
-```
+```java
 @Service
 public class TodoHardCodedService {
 
@@ -121,7 +121,7 @@ public class TodoHardCodedService {
 - This annotation allows Spring to resolve and inject collaborating beans into your bean.
 - Once annotation injection is enabled, autowiring can be used on properties, setters, and constructors.
 - Spring Team recommends: "Always use constructor based dependency injection in your beans. Always use assertions for mandatory dependencies"
-```
+```java
 @Autowired
 private TodoHardCodedService todoService; //Without autowired, the todoService can't be injected with TodoHardCodedService
 ```
