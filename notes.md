@@ -121,6 +121,12 @@ public class TodoHardCodedService {
 - This annotation allows Spring to resolve and inject collaborating beans into your bean.
 - Once annotation injection is enabled, autowiring can be used on properties, setters, and constructors.
 - Spring Team recommends: "Always use constructor based dependency injection in your beans. Always use assertions for mandatory dependencies"
+```
+5.3. Autowiring by Name
+As a fallback Spring uses the bean name as a default qualifier value.
+
+So by defining the bean property name, in this case as fooFormatter, Spring matches that to the FooFormatter implementation and injects that specific implementation when FooService is constructed:
+```
 ```java
 @Autowired
 private TodoHardCodedService todoService; //Without autowired, the todoService can't be injected with TodoHardCodedService
