@@ -1,0 +1,124 @@
+Example:
+
+Create a User: POST/users
+Delete a User: DELETE/users/{id}        
+Get all Users: GET/users
+Get one Users: GET/users/{id}           
+
+Get all posts for a User: Get/users/{id}/posts 
+Createa a post for a User:POST/users/{id}/posts
+Retrieve details of a post:GET/users/{id}/posts/{post_id}
+
+use POST to create something
+
+
+simple hello world program using REST
+
+import ...
+
+//Controller
+@RestController
+public class HelloWorldController{
+	//prints "Hello World"
+	//uses GET method
+	//URI: /hello-world
+
+	@RequestMapping(method=RequestMethod.GET, path="/hello-world")//path="<URI link>"
+	//Alternative way:
+	//@GetMapping(path="/hello-world")
+	public String helloWorld(){
+		return "Hello World";
+	}
+}
+
+
+@GetMapping("<path uid>"): to get data
+@PostMapping("<path uid>"): to post(add) data
+@DeleteMapping("<path uid>"): to delete data
+@SpringBootApplication: Tells the system this is the start of the service
+@RestController: request handeler
+@Component: communicate to database
+@Autowired: Auto connect the @Component section in that class to the @Autowired variable
+@PathVariable: use the path from the uri as variable as parameter. In this section, all the rest controller parameter come from path variable
+@RequestBody: whatever the body of request would pass in, it would also mapped to the variable where @RequestBody is at
+ResponseEntity<T>.created(location):response the created status
+ServletUriComponentsBuilder.fromCurrentRequest().path(<string>).buildAndExpand(<string>).toUri(): create uri from the current request with the path <string> construct it to <string>
+@Valid: to validate
+	@Size(<kind> = <x>): fulfill the size of the format within x
+		<kind>: min- minium length
+		<kind>: message- what the message should be
+	@Past: compare the time to the current time, make sure the provided time is before the current time
+HEAETOAS: hyper media as the engine of application state.
+	First apply it by insert :
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>sprint-boot-starter-hateoas</artifactId>
+		</dependency>
+	Then create a EntityModel class:
+		EntityModel<Type> variable = EntityModel.of(parameters);
+@Bean: configer something in restful web service
+@ApiModel(description="<description>"):construct an api description regards in that class
+@ApiModelProperty(notes="<notes>"): construct an api note regards to that variable
+
+
+
+Internationalization:
++Configuration
+- LocaleResolver
+	-Default Locale - Locale.US
+- ResourceBundleMessageSource
+
++Usage
+- Autowire MessageSource
+- @RequestHeader(<variable>="Accept-Language", required = "false")Locale locale
+- messageSource.getMessage(<message string>, null, locale)
+	+ResourceBundleMessageSource:
+		-.setBasename("fileName(no".properties")"): set the default path for the message
+
+to xml file:
+add the following dependency
+
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+</dependency>
+
+swagger documents:
+add the following dependency
+
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+</dependency>
+
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+</dependency>
+ 
+<dependency>
+	<groupId>io.springfox</groupId>
+	<artifactId>springfox-swagger-ui</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+</dependency>
+ 
+<dependency>
+	<groupId>io.springfox</groupId>
+	<artifactId>springfox-spring-webmvc</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+</dependency>
+
+Spring Boot Actuator:
+1: add dependency
+<dependency>
+	<groupID>org.springframework.boot</groupID>
+	<artifactID>spring-boot-starter-actuator</artifactID>
+</dependency>
+<dependency>
+	<groupID>org.springframework.data</groupID>
+	<artifactID>spring-data-rest-hal-browser</artifactID>
+</dependency>
+2. add the following in the application.properties:
+management.endpoints.web.exposure.include=*
