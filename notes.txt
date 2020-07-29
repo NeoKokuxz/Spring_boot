@@ -1,3 +1,8 @@
+‎Spring Boot
+
+Maven Project, >2.0.0 try not to use the "M" version Snapshot version is fine
+start up dependencies: Web, DevTools, JPA, H2
+
 Example:
 
 Create a User: POST/users
@@ -38,10 +43,10 @@ public class HelloWorldController{
 @SpringBootApplication: Tells the system this is the start of the service
 @RestController: request handeler
 @Component: communicate to database
-@Autowired: Auto connect the @Component section in that class to the @Autowired variable
+@Autowired: Auto connect the service in that class to the @Autowired variable that created a variable of that type
 @PathVariable: use the path from the uri as variable as parameter. In this section, all the rest controller parameter come from path variable
 @RequestBody: whatever the body of request would pass in, it would also mapped to the variable where @RequestBody is at
-ResponseEntity<T>.created(location):response the created status
+ResponseEntity<T>.created(uri path):response the created status
 ServletUriComponentsBuilder.fromCurrentRequest().path(<string>).buildAndExpand(<string>).toUri(): create uri from the current request with the path <string> construct it to <string>
 @Valid: to validate
 	@Size(<kind> = <x>): fulfill the size of the format within x
@@ -59,6 +64,10 @@ HEAETOAS: hyper media as the engine of application state.
 @Bean: configer something in restful web service
 @ApiModel(description="<description>"):construct an api description regards in that class
 @ApiModelProperty(notes="<notes>"): construct an api note regards to that variable
+@JsonIgnore: varaible right under this notation will not be respond to the request
+@JsonIgnoreProperties(value={"<value(s)>"}): insted of multiple @JsonIgnore about each variable,
+	you can use this anotation above the class and specify which variable(s) of values
+	should the responds ignore and not show.
 
 
 
@@ -75,7 +84,7 @@ Internationalization:
 	+ResourceBundleMessageSource:
 		-.setBasename("fileName(no".properties")"): set the default path for the message
 
-to xml file:
+---to xml file:
 add the following dependency
 
 <dependency>
@@ -83,7 +92,7 @@ add the following dependency
     <artifactId>jackson-dataformat-xml</artifactId>
 </dependency>
 
-swagger documents:
+---swagger documents:
 add the following dependency
 
 <dependency>
@@ -110,7 +119,7 @@ add the following dependency
 	<version>3.0.0-SNAPSHOT</version>
 </dependency>
 
-Spring Boot Actuator:
+---Spring Boot Actuator:
 1: add dependency
 <dependency>
 	<groupID>org.springframework.boot</groupID>
@@ -122,3 +131,389 @@ Spring Boot Actuator:
 </dependency>
 2. add the following in the application.properties:
 management.endpoints.web.exposure.include=*
+
+
+---create a dynamic filter:
+1. go to the class that needs filter the varaible, add @JsonFilter("<nameA>")
+
+2. go to the function that wants to filter, create a SimpleBeanPropertyFilter variable:
+	SimpleBeanPropertyFilter <variable> = SimpleBeanPropertyFilter.filterOutAllExcept("<propertie(s)that wants to show>");
+3. then create FilterProvider variable:
+	FilterProvider <variable> = new SimpleFilterProvider().addFilter("<nameA>", <variable name from SimpleBeanPropertyFilter>);
+4. then create MappingJacksonValue variable:
+	MappingJacksonValue <variable> = new MappingJacksonValue(<Other variable>);
+5. using MappingJacksonValue variable to setFilters:
+	<MappingJacksonValue <variable>>.setFilters(<FilterProvider <variable>>);
+6. return the MappingJacksonValue variable. Also change the return type to MappingJacksonValue
+
+---doing versioning of getter:
+First way: request parameter
+@GetMapping(value="<uri>", params="<version>=<version 1>")
+@GetMapping(value="<uri>", params="<version>=<version 2>")
+@GetMapping(value="<uri>", params="<version>=<version 3>")
+.
+.
+.
+@GetMapping(value="<uri>", params="<version>=<version n>")
+in the browser, the uri will be like the following: https://<link>/<uri>?<version>=<version x>
+
+Second way: header parameter
+@GetMapping(value="<uri>", herders="<version>=<version 1>")
+@GetMapping(value="<uri>", headers="<version>=<version 2>")
+@GetMapping(value="<uri>", headers="<version>=<version 3>")
+.
+.
+.
+@GetMapping(value="<uri>", headers="<version>=<version n>")
+you can't type directly the version type in the browser like the request parameter.
+the way you do is you type https://<link>/<uri> in postman, 
+and in the header, you then type in the <version> under Key and <version x> under the value
+
+Third way: produces parameter or accept parameter
+@GetMapping(value="<uri>", produces="application/<some name>-<version 1>+<type of output, in this example, I am using json>")
+@GetMapping(value="<uri>", produces="application/<some name>-<version 2>+<type of output>")
+@GetMapping(value="<uri>", produces="application/<some name>-<version 3>+<type of output>")
+.
+.
+.
+@GetMapping(value="<uri>", produces="application/<some name>-<version n>+<type of output>")
+same as header where you can't type it in directly in the browser,
+the way you do is you type https://<link>/<uri> in postman, 
+and in the header, you then type in Accept under Key and 
+application/<some name>-<version x>+<type of output> under the value
+
+Security: Basic Authenticaltion
+implementation in pom.xml:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+after implementation, whenever you need to do anything in the backend you will need a 
+authorization first or you can not do any service.
+The basic Authenticaltion username is user
+and password is the one given when you start up the server
+to implement the Authenticaltion in postman:
+1. go to Authenticaltion tab and select "Basic Auth" under type
+2. type in "user" in Username and the given password by the server to the password
+3. now send the request again, you are now able to see it
+you can configure your own username and password:
+1. go to application.properties in src/main/resources
+2. type in spring.security.user.name = <desire username> and spring.security.user.password=<desire password>
+
+---User Entity:<talks to the database>jpa
+set up: in application.properties, add spring.jpa.show-sql=true and spring.h2.xonsole.enabled=true
+1. @Entity to the class, the table will be created using that class name as table name
+@Id: the following variable is id (primary key)
+@GeneratedValue(strategy=GenerationType.<type>): the following variable is generated when create;
+by default(only @GeneratedValue) is AUTO which is increase by 1 and start by 1
+if strategy=GenerationType.<type> and <type> is SEQUENCE, you will need to add a comma after and add generator=<name>
+and also add the following above the class:
+@SequenceGenerator(name=<name>, initialValue=<initial value>, allocationSize=<increasemant by>)
+2. create a new interface that extends JpaRepository<<manange class>,<the type of primary key>> and add @Repository above the interface
+3. most of the methods are already implemented in JpaRepository, so you can use it directly
+
+**when you declare a variable that also uses @Entity in the same package, you need to specify the relation between the current
+entity class you are at to the entity class you declare.(@ManyToOne, @OneToOne, @OneToMany)
+And to prevent infinite recrusion, we need to put (fetch=FetchType.LAZY) right after one of the annoation shown above.
+when implement @OneToMany, you will need to add (mappedBy="<variable>")
+*This is basically adding a constraint of forigen key to a primary key
+**ex. alter table post add constraint FK72mt33dhhs48hf9gcqrq4fxte foreign key (user_id) references user
+Use @JsonIgnore to ignore the server reading this info. To prevent infinte loop
+
+
+
++++++++++++++++++++++++++++++++++Spring Cloud++++++++++++++++++++++++++++++++++
++-+-+-+-+-+-All the Maven Project should be at the same version+-+-+-+-+-+-
+---set up for limit-service
+Maven Project, >2.0.0 and is not Snapshot
+start up dependencies: Web, DevTools, Actuator, Config Client
+
+---Create a limit service configuration: 
+You can create the minimum and maximum limits by adding <prefix>.minimum=<number x> <prefix>.maximum=<number y > x>
+in application.properties
+1.create a class with @RestController (ill call it class a)
+2.create a class with @Component and @ConfigurationProperties("<prefix>")(ill call it class b)
+3.in class b, create variables that matches the variables after "." after prefix you created and create their getter and setter
+(in this case the variables are minimum and maximum)
+4. in class a, create a variable of class b and @Autowired
+
+---set up for spring cloud server
+Maven Project, version is same for installing spring boot
+start up dependencies: DevTools, Config Server
+install port number:8888
+
+---Add an external link source to the spring cloud server:(to git)
+0. create a git repo in a folder
+1. in the cloud server main (mine is SpringCloudConfigServerApplication.java), before the class, add @EnableConfigServer to enable the server 
+2. in eclipse, go to that project folder, right click -> Build Path -> Link Source
+or right click -> build path -> configure Build Path -> source -> linked source
+3. in that folder you cinked, create a .properties file with <prefix>.minimum=<number x> <prefix>.maximum=<number y > x>
+4. in git, add that file and commit
+5. then copy the location of that git folder by right click, properties then copy it location path <link>
+6. go to the application.properties in your cloud server, add the following line:
+spring.cloud.config.server.git.uri=(add "file://"(file:/// for windows) before <link> if you are using local file)<link>
+also, change all the back slashes"\" to foward shashes "/"
+7. in web browser, type http://localhost:<port num>/<prefix>/default
+
+---overwrite configurations depends on enviornment:
+0. create multiple <prefix>-<add on>.properties under git repo folder and commit them
+1.in the configuration class, you already have a class with @ConfigurationProperties("<prefix>")
+in the web browser, type http://localhost:<port num>/<prefix>/<add on> any properties in the <add on>.properties
+will be over written and those which are not specify in the <add on>.properties will remain the same
+value as default
+
+---connect limits service to spring cloud config server:
+0. rename the application.properties in limit-service to bootstrap.properties(you still can treat it as application.properties)
+1. add the following line: spring.cloud.config.uri=<url>
+ex.spring.cloud.config.uri=http://localhost:8888
+note: spring.application.name=<prefix> in the limit-service must match the name in the .properties files in spring cloud
+ex. in spring cloud project, limit-service.properties is created in the git repo folder, the spring.application.name in
+limits service bootstrap.properties is limit-service
+ex. spring.application.name=limit-service
+to open the specific kind of service, add addational line after the above line: 
+spring.profiles.active=<add on>
+so if I want the qa limit service, I will add spring.profiles.active=qa
+
++++++++++++++++++++++++++++++Microsevice++++++++++++++++++++++++++++++++
++-+-+-+-+-+-All the Maven Project should be at the same version+-+-+-+-+-+-
+---set up for microservice
+Maven Project, >2.0.0 and is not Snapshot
+start up dependencies: Web, DevTools, Actuator, Config Client
+
+Spring Boot have their constructed class name called Environment which is able to return the port number on the application
+which is running. Construct as followes:
+
+import org.springframework.core.env.Environment;
+@Autowired
+private Environment <variable>;
+
+to get the port number (return as String):
+<Environment variable>.getPorperty("local.server.port");
+
+---JPA connection in memory database
+set up:
+add dependencies:
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+</dependency>
+
+at the service class(the class isn't name with "controller"), add:
+@Entity before the class
+@Id before the primary key
+they both are imported from javax.persistence
+the table name would be the class name you put @Entity at.
+for table name are all lower case and for any two word class name,
+it will be seperated it by "_"
+ex. ExchangeValue in java class name will be exchange_value in sql table
+
+in application.properties, add
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.jpa.show-sql=true
+spring.h2.console.enabled=true
+
+you can change the column variable name by @Column(name="<name>") above the variable which you want to change it
+column name in sql
+
+for insert construction, it is best practice follow the following format:
+
+insert into <table name>(<parameter 1>,...<parameter n>)
+values(<value 1>,...<value n>)
+position matters, just like declareing and implememnting the java methods
+
+--- create a jQuery in JpaRepository:
+using this following:
+public interface CurrencyExchangeRepo extends JpaRepository<ExchangeValue, Long>{
+	//1. ExchangeValue
+	//2. find from and to: findByFromAndTo
+	//3. (String from, String to);
+	//combine all three steps
+	ExchangeValue findByFromAndTo(String from, String to);
+	//the Jpa will automatically implement the qurry for you
+}
+1.to create a jQuery, the first thing is the return type, the return type should be the first argument in the 
+JpaRepository
+2. next is the name, if you want to find something, use "findBy" and after that, include the column name you want to find
+seperate it by "And"
+3. you need to pass in the same number of arguments you declared the method name. For this example, I declared to find 2
+column name, so I need to provide two parameters.
+
+--- to get the result from another restful service, do the following:
+ResponseEntity<<return class>> <variable a> = 
+	new RestTemplate().getForEntity(<url>, <return class type>,<hash map for uri variable>);
+declare a hash map
+Map<keyType,valueType> = new HashMap<>();
+in the uri, everything is with {} is treated as variable
+after that, you need to get the response body by the following:
+<return class> <variable> = <variable a>.getBody();
+then use this variable to get the value
++++Important Note: the method name in one class must match the method name in another class that has the same functionally	or
+error will occur
+
+---Feign
+Feign makes it very easy to invoke other microseives and restful services
+provides integration called "Ribbon"
+
+to implement Feign:
+1.add dependecy:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+
+2.enable Feign:
+in the class where the main is at, add the following annotation before the class:
+@EnableFeignClients("<package name>")
+
+3.create an interface to connect the Feign to your client:
+1. create an interface
+2. in that interface, add the add the following annotation before the class:
+@FeignClient(name="<name of the service you are going to call>", url="<url of the service you are going to call>")
+3. in the interface, define the method that you will call and change the return type to your return type
+Again, the method name between the caller interface and the called class must match
+@PathVariable("<uri variable>"):tell the system which path variable in uri you refering to.
+If you did not specify, ex.@PathVariable ..., then it will just grab it in order.
+
+---Ribbon
+1. add dependency
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+</dependency>
+2.enable Ribbon:
+in the class where you create the Feign interface at, add the following annotation before the class:
+@RibbonClient(name="<name of the service you are going to call>")
+//most likely goning to be the same name as the name parameter in @FeignClient
+since Ribbon enable program to talk to multiple services, in @FeignClient, remove the "url=" and it parameter
+but insted put it in in the application.properties by the followes:
+<name of the service you are going to call>.ribbon.listOfServers=<list of url seperate it by comma",">
+
+++++++++++++++++++++++++++++++++++Eureka Naming Server+++++++++++++++++++++++++++++++++++
++-+-+-+-+-+-All the Maven Project should be at the same version+-+-+-+-+-+-
+---setup for Eureka Naming Server:
+Maven Project, >2.0.0 and is not Snapshot
+start up dependencies: Eureka Server, Config client, Actuator, devTools
+in the main class, before the class, add:
+@EnableEurekaServer
+
+connect other micro services to eureka server:
+1. add dependecy at that micro server looks as followes:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+	<!--Include the following if you want to see in json format-->
+	<exclusions>
+		<exclusion>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency>
+
+2. register to the naming server:
+at the main function of the micro services, before the main, add the following annotation:
+@EnableDiscoveryClient
+
+3. configure the url for eureka:
+in the application.properties at the project where you did step 2 on, add the following:
+eureka.client.service-url.default-zone=http://<port or url>/<eureka or uri>
+
+++++++++++++++++++++++++++++++++++++++++Zuul Api Gateway+++++++++++++++++++++++++++++++++++++++++++
++-+-+-+-+-+-All the Maven Project should be at the same version+-+-+-+-+-+-
+---setup for Zuul Api Gateway:
+Maven Project, >2.0.0 and is not Snapshot
+start up dependencies: Zuul, Eureka Discovery, Actuator, devTools
+in Zuul server, you need to enable zuul proxy and name discovery, enable as follows:
+in the main, before the class, add:
+@EnableZuulProxy
+@EnableDiscoveryClient
+
+ZuulLogginFilter should @Component, extends ZuulFilter and implement all unimplement ZuulFilter
+
+to execute the service through the gateway:
+http://{gateway url}/{applicatation name}/{application uri}
+
+uses gateway between microservices communication using gateway proxy:
+1. for the name in the @FeignClient at the microservices, change it to the name of the gateway service
+2. in the get method(same interface where you do step 1), since the uri now have extra {application name}, you need to 
+add that in the uri in get method
+
++++++++++++++++++++++++++++Distributed Tracing++++++++++++++++++++++++++++++++++++
+implement Spring Cloud Sleuth to the micro services where it distribute an unique ID:
+	1. add dependency:
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-sleuth</artifactId>
+	</dependency>
+
+	2. create a sampler in main:(there are multiple types of sampler, but this example shows always sampler)
+	@Bean
+	public Sampler defaultSampler(){
+		return Sampler.ALWAYS_SAMPLER;
+	}
+	
+---Zipkin the distributed tracing server
+---setup:
+1.Install Rabbit MQ:
+	prerequirement: install Erlang
+
+2.Install Zipkin:
+	google "zipkin quickstart", copy the url and download
+	move the quickstart.ssh to apporate location and launch it
+	it will then install the files, open the cmd, go to the folder where you put your quickstart at
+	normally, we just type "java -jar zipkin.jar" in cmd and it will work
+	but we need to communicate to RabbitMQ, so we need to add the followings:
+	"SET RABBIT_URI=amqp://localhost" then "java -jar zipkin.jar"
+we will then use communicate to rabbitMQ and it will then transfer it to Zipkin
+
+---connecting micro services to zipkin(through RabbitMQ):
+1. connect micro services to RabbitMQ:
+	1. add dependecies:
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zipkin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit</artifactId>
+		</dependency>
+2. RabbitMQ connect it to Zipkin
+	After implementation of the dependences, RabbitMQ will translate Cloud Sleuth tracing to Zipkin understandable
+	language then use Zipkin server to open up
+
++++++++++++++++++++++++++Spring Cloud Bus+++++++++++++++++++++++++++++
+purpose: refrest automatically when the database is changed
+1.use RabbitMQ to do the Spring Cloud Bus, so add that dependecy on both limits and spring cloud config server:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+2.in limits service, in bootstrap.properties(renamed from application.properties), add these lines:
+
+spring.cloud.bus.enabled=true
+management.endpoints.web.exposure.include=bus-refresh
+
+3.after you commit the changes of the database in git, in postman, POST the following link:
+http://<url>(in this case is url of limit-server)/actuator/bus-refresh
+then the info changes in database will be updated.
+
+++++++++++++++++++++++++++++++Fault Tolerance(with Hystrix)+++++++++++++++++++++++++++
+purpose:to prevent chain shutdown if one of the server is down
+
+setup:
+1. add the following dependency:
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+</dependency>
+2. enable it by the main class:
+before class, add @EnableHystrix
+
+3.for the following method with getmapping, postmapping, deletemapping, before the method, add:
+@HytrixCommand(fallbackMethod="<method name>")
+and you will need to create that method
