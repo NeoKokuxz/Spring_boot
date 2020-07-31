@@ -42,7 +42,7 @@ Parameter | Type | Data Type | Description | Required
 
 #### Example request
 http://localhost:8080/names <br>
-http://localhost:8080/names/{name}
+http://localhost:8080/names/{StringName}/
 
 ## **GET** /item/types
 *list of all unique item type currently cataloged in the project*
@@ -50,6 +50,22 @@ http://localhost:8080/names/{name}
 ### Parameters
 Parameter | Type | Data Type | Description | Required
 | --- | --- | --- | --- | --- |
-| 
+| list | query | string | list of all unique item types | YES |
+| {type} | query | string | input name of the item type in order to get item detail under same type | YES |
 
 #### Example request
+http://localhost:8080/types/list <br>
+http://localhost:8080/types/list/{typeName}/
+
+
+## **GET** /items/id
+*Search item by id that currently cataloged in the project*
+
+### Parameters
+Parameter | Type | Data Type | Description | Required
+| --- | --- | --- | --- | --- |
+| id | query | string | id of item | YES |
+| {id} | query | string | input id to search item | YES |
+
+#### Example request
+http://localhost:8080/id/{1}/
