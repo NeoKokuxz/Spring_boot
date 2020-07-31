@@ -6,7 +6,7 @@ API | Description | Auth | HTTPS |
 | [MenuAPI](https://github.com/NeoKokuxz/Spring_boot/tree/master/MenuAPI) | Menu API | BasicAuth | Yes |
 
 ## Auth
-User: admin
+User: admin <br>
 Password: password
 
 ## Github Project
