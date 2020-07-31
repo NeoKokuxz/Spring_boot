@@ -4,6 +4,7 @@
 http://localhost:8080
 
 ## Index
-*[Usage] (#Usage)
+* [Usage] (#Usage)
 
 ## Usage
+API | Description | Auth | HTTPS |
