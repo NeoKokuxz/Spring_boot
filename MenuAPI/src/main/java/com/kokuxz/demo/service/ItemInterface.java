@@ -1,6 +1,7 @@
 package com.kokuxz.demo.service;
 
 import com.kokuxz.demo.entity.Item;
+import com.kokuxz.demo.entity.Name;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public interface ItemInterface {
     List<Item> retrieveItemByName(String name);
 
     //Get all item types
-    List<String> retrieveItemTypes();
+    List<String> retrieveItemTypeString();
 
     //Get all item names
-    List<Item> retrieveItemNames();
+    List<Name> retrieveItemNames();
 }
