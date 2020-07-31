@@ -23,9 +23,13 @@ http://localhost:8080
 
 Parameter | Type | Data Type | Description | Required
 | --- | --- | --- | --- | --- |
-| name | query | string | name of item | No |
+| items | query | string | list of item| YES |
+| names | query | string | name of item | No |
+| types | query | string | type of item | No |
+| id | query | long | id of item | No |
 
 #### Example request
+http://localhost:8080/items
 
 ## **GET** /items/names
 *list of all item names currently cataloged in the project*
@@ -33,9 +37,12 @@ Parameter | Type | Data Type | Description | Required
 ### Parameters
 Parameter | Type | Data Type | Description | Required
 | --- | --- | --- | --- | --- |
-| 
+| string | query | string | string of item name | NO |
+| {name} | query | string | input name to match item in order to get item detail | NO |
 
 #### Example request
+http://localhost:8080/names
+http://localhost:8080/names/{name}
 
 ## **GET** /item/types
 *list of all unique item type currently cataloged in the project*
