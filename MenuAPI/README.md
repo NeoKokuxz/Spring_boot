@@ -16,7 +16,7 @@ https://github.com/NeoKokuxz/Spring_boot/tree/master/MenuAPI
 http://localhost:8080
 
 ## Index
-* [Usage](#Usage)
+* [Services](#Services)
 
 # Services
 
