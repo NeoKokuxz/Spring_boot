@@ -41,7 +41,7 @@ Parameter | Type | Data Type | Description | Required
 | {name} | query | string | input name to match item in order to get item detail | NO |
 
 #### Example request
-http://localhost:8080/names
+http://localhost:8080/names <br>
 http://localhost:8080/names/{name}
 
 ## **GET** /item/types
