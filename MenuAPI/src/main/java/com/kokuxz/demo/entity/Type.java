@@ -1,22 +1,22 @@
 package com.kokuxz.demo.entity;
 
 public class Type {
-    private String name;
+    private String type;
     //private Long id;
 
     public Type(){}
 
     public Type(String name) {
-        this.name = name;
+        this.type = name;
         //this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String name) {
+        this.type = name;
     }
 
 //    public Long getId() {

@@ -79,7 +79,6 @@ public class ItemService implements ItemInterface {
         List<Item> newList = new ArrayList<>();
         List<Item> i = (List<Item>) itemRepository.findAll();
         for(Item x : i){
-            System.out.println(x.getType());
             if(x.getType().equals(type)){
                 newList.add(x);
             }
@@ -93,7 +92,6 @@ public class ItemService implements ItemInterface {
     }
 
     public List<Type> retrieveItemTypes(){
-        System.out.println("Here!");
         boolean contain = false;
         List<Item> stringList = (List<Item>) itemRepository.findAll();
         List<Type> newList = new ArrayList<>();
@@ -103,7 +101,7 @@ public class ItemService implements ItemInterface {
                 newList.add(type);
             } else {
                 for(int i = 0; i < newList.size(); i++){
-                    if(newList.get(i).getName().equals(type.getName())){
+                    if(newList.get(i).getType().equals(type.getType())){
                         contain = true;
                     }
                 }
