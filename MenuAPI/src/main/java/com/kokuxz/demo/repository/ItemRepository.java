@@ -19,14 +19,20 @@ public interface ItemRepository extends CrudRepository<Item, Long> {
     @Query("SELECT i.id, i.name FROM Item i")
     List<Item> retrieveItemNames();
 
+//    @Query("SELECT i.id, i.name FROM Item i")
+//    List<Item> retrieveItemNames();
+
     @Query("SELECT i.id, i.type, i.name, i.price FROM Item i WHERE i.id=:id")
     Item retrieveItemById(Long id);
 
     @Query("SELECT i.id, i.type, i.name, i.price FROM Item i WHERE i.name=:name")
-    List<Item> retrieveItemByName(String name);
+    Item retrieveItemByName(String name);
 
     @Query("SELECT i.id, i.type FROM Item i")
     List<String> retrieveItemTypes();
+
+    @Query("SELECT i.id, i.type, i.name, i.price FROM Item i WHERE i.name=:name")
+    List<Item> retrieveItemByNameGG();
 
 
 }

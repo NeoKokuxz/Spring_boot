@@ -33,7 +33,7 @@ public class ItemController {
         return new ResponseEntity<>(i, HttpStatus.OK);
     }
 
-    @GetMapping("/items/name/{name}")
+    @GetMapping("/items/names/{name}")
     public ResponseEntity<List<Item>> getItemByName(@PathVariable String name){
         List<Item> i = itemService.retrieveItemByName(name);
         return new ResponseEntity<>(i, HttpStatus.OK);
