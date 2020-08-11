@@ -4,6 +4,8 @@ import com.kokuxz.demo.entity.Item;
 import com.kokuxz.demo.entity.Name;
 import com.kokuxz.demo.entity.Type;
 import com.kokuxz.demo.service.ItemService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+//@ApiResponses(value = {
+//        @ApiResponse(code = 400, message = "Code 400 Bad Request. Please review API guideline to use proper format!"),
+//        @ApiResponse(code = 200, message = "Code 200 OK Request!"),
+//        @ApiResponse(code = 401, message = "Code 401 Security constrains! Please make sure request is authenticated!"),
+//        @ApiResponse(code = 500, message = "Code 500 Server Error! Please make sure server is running!")
+//})
 public class ItemController {
 
     private ItemService itemService;
